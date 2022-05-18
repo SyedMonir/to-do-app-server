@@ -11,10 +11,39 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.zpztt.mongodb.net/?retryWrites=true&w=majority`;
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverApi: ServerApiVersion.v1,
+});
+
+async function run() {
+  try {
+    await client.connect();
+    console.log('Mongodb Connected');
+    const todoCollection = client.db('to-do').collection('tasks');
+
+    app.get('/todo', async (req, res) => {
+      const todo = await todoCollection.find().toArray();
+      res.send(todo);
+    });
+
+    app.post('/todo', async (req, res) => {
+      const todo = req.body;
+      const result = await todoCollection.insertOne(todo);
+      res.send(result);
+    });
+  } finally {
+  }
+}
+
+run().catch(console.dir);
+
 app.get('/', (req, res) => {
-  res.send('Dental Clients Server Running..');
+  res.send('To-Do Server Running..');
 });
 
 app.listen(port, () => {
-  console.log('Dental Clients Server Running..');
+  console.log('To-Do Server Running..');
 });
