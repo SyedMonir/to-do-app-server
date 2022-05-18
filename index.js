@@ -37,9 +37,9 @@ async function run() {
 
     app.put('/todo/:id', async (req, res) => {
       const id = req.params.id;
-      console.log(id);
+      //   console.log(id);
       const isComplete = req.body;
-      console.log(isComplete);
+      //   console.log(isComplete);
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updateDoc = {
