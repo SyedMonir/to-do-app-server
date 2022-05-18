@@ -34,6 +34,27 @@ async function run() {
       const result = await todoCollection.insertOne(todo);
       res.send(result);
     });
+
+    app.put('/todo/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const isComplete = req.body;
+      console.log(isComplete);
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: { completed: isComplete.completed },
+      };
+      const result = await todoCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+    });
+
+    app.delete('/todo/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await todoCollection.deleteOne(query);
+      res.send(result);
+    });
   } finally {
   }
 }
